@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Chapter ' + ${chapter.chapterNumber} + ' - ' + ${story.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .reader-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2rem 3rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 768px) {
+            .reader-container {
+                padding: 1.5rem 1rem;
+            }
+        }
+        .reader-header {
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .reader-header a {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.875rem;
+        }
+        .reader-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: var(--primary-color);
+        }
+        .reader-content {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-color);
+            font-family: inherit;
+        }
+        .reader-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        /* Fixed top bar for reading controls */
+        .reader-topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+        }
+        body.scrolled-up .reader-topbar {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="reader-topbar">
+        <a th:href="@{/story/{slug}(slug=${story.slug})}" class="btn" style="padding: 0.25rem 0.75rem;">← Back</a>
+        <span th:text="${story.title}" style="font-weight: 600; font-size: 0.875rem;"></span>
+        <button class="btn" style="padding: 0.25rem 0.75rem;"
+            onclick="document.body.classList.toggle('dark-mode')">🌙</button>
+    </div>
+    <div id="progress-data" th:data-story-id="${story.id}" th:data-chapter-id="${chapter.id}" style="display: none;">
+    </div>
+    <div class="container">
+        <div class="reader-container">
+            <div class="reader-header">
+                <a th:href="@{/story/{slug}(slug=${story.slug})}" th:text="${story.title}">Story Title</a>
+                <div class="reader-title" th:text="'Chapter ' + ${chapter.chapterNumber} + ': ' + ${chapter.title}">
+                    Chapter 1</div>
+            </div>
+            <div class="reader-content" th:utext="${chapter.content}">
+                Text content goes here... Use utext to render HTML if the text includes formatting.
+            </div>
+            <div class="reader-controls">
+                <button class="btn btn-primary" disabled>← Previous</button>
+                <a th:href="@{/story/{slug}(slug=${story.slug})}" class="btn">List</a>
+                <button class="btn btn-primary">Next →</button>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/reader.js}"></script>
+</body>
+</html>
