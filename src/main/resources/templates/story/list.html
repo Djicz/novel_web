@@ -8,7 +8,7 @@
     <style>
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
             margin-top: 2rem;
         }
@@ -62,14 +62,14 @@
             <a th:if="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_UPLOADER'')')}"
                 th:href="@{/uploader/stories/new}" class="btn btn-primary">Post New Story</a>
         </div>
-        <div class="filters">
-            <input type="text" class="form-control" placeholder="Search by title or author..."
+        <form th:action="@{/stories}" method="get" class="filters">
+            <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Search by title or author..."
                 style="max-width: 300px;">
             <select class="form-control" style="max-width: 200px;">
                 <option value="">All Genres</option>
             </select>
-            <button class="btn btn-primary">Search</button>
-        </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
         <div th:if="${#lists.isEmpty(stories)}" class="card text-center" style="padding: 3rem;">
             <h3>No stories found</h3>
             <p>Check back later or try adjusting your search filters.</p>
@@ -89,6 +89,24 @@
                     </div>
                 </div>
             </a>
+        </div>
+        
+        <!-- Pagination block -->
+        <div th:if="${page != null and page.totalPages > 1}" class="pagination" style="margin-top: 2rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center;">
+            <a th:if="${page.hasPrevious()}" 
+               th:href="@{/stories(keyword=${keyword}, page=${page.number - 1})}" 
+               class="btn" style="padding: 0.5rem 1rem; border: 1px solid var(--border-color); border-radius: 4px; text-decoration: none; color: var(--text-color);">Trước</a>
+            
+            <span style="padding: 0.5rem 1rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 4px; font-weight: 500;">
+                Trang <span th:text="${page.number + 1}">1</span> / <span th:text="${page.totalPages}">10</span>
+            </span>
+            
+            <a th:if="${page.hasNext()}" 
+               th:href="@{/stories(keyword=${keyword}, page=${page.number + 1})}" 
+               class="btn" style="padding: 0.5rem 1rem; border: 1px solid var(--border-color); border-radius: 4px; text-decoration: none; color: var(--text-color);">Tiếp</a>
+        </div>
+        <div th:if="${page != null}" style="text-align: center; margin-top: 1rem; color: #718096; font-size: 0.875rem;">
+            Tổng cộng: <span th:text="${page.totalElements}">0</span> truyện
         </div>
     </div>
 </body>
