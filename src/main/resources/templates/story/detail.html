@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +18,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             border: 1px solid #f1f5f9;
         }
+
         @media (max-width: 768px) {
             .story-header {
                 flex-direction: column;
@@ -24,6 +26,7 @@
                 gap: 1.5rem;
             }
         }
+
         .story-cover-large {
             width: 280px;
             height: 400px;
@@ -34,15 +37,18 @@
             flex-shrink: 0;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .story-cover-large:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
         }
+
         .story-details {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
+
         .story-details h1 {
             font-size: 2.25rem;
             font-weight: 800;
@@ -50,12 +56,14 @@
             color: #1e293b;
             line-height: 1.2;
         }
+
         .meta-badges {
             display: flex;
             gap: 0.75rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
+
         .badge {
             background: #f1f5f9;
             border: 1px solid #e2e8f0;
@@ -68,11 +76,13 @@
             align-items: center;
             gap: 0.25rem;
         }
+
         .badge-status {
             background: #dbeafe;
             color: #1d4ed8;
             border-color: #bfdbfe;
         }
+
         .story-desc {
             font-size: 1.05rem;
             line-height: 1.7;
@@ -80,6 +90,7 @@
             margin-bottom: 2rem;
             flex-grow: 1;
         }
+
         /* Animated Buttons */
         .action-buttons {
             display: flex;
@@ -87,6 +98,7 @@
             margin-top: auto;
             flex-wrap: wrap;
         }
+
         .btn-animated {
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
@@ -103,31 +115,37 @@
             cursor: pointer;
             border: none;
         }
+
         .btn-read {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
         }
+
         .btn-read:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
             color: white;
             /* Ensure text stays white */
         }
+
         .btn-read:active {
             transform: translateY(0);
         }
+
         .btn-outline {
             background-color: transparent;
             color: #475569;
             border: 2px solid #cbd5e1;
         }
+
         .btn-outline:hover {
             border-color: #3b82f6;
             color: #3b82f6;
             transform: translateY(-2px);
             background-color: #eff6ff;
         }
+
         /* Chapter List */
         .chapter-list {
             background: #ffffff;
@@ -137,6 +155,7 @@
             overflow: hidden;
             margin-bottom: 3rem;
         }
+
         .chapter-header {
             padding: 1.25rem 2rem;
             background: #f8fafc;
@@ -148,6 +167,7 @@
             align-items: center;
             gap: 0.5rem;
         }
+
         .chapter-item {
             display: flex;
             justify-content: space-between;
@@ -159,9 +179,11 @@
             text-decoration: none;
             font-weight: 500;
         }
+
         .chapter-item:last-child {
             border-bottom: none;
         }
+
         .chapter-item:hover {
             background-color: #f8fafc;
             color: #2563eb;
@@ -170,6 +192,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar" th:replace="~{index :: .navbar}"></nav>
     <div class="container" style="padding: 2rem 1rem;">
@@ -188,6 +211,9 @@
                             th:text="${story.views}">0</span></span>
                     <span class="badge" style="color: #ea580c; border-color: #ffedd5; background: #fff7ed;"><i
                             class="fas fa-star"></i> <span th:text="${story.averageRating}">0.0</span></span>
+                    <span class="badge" style="color: #10b981; border-color: #d1fae5; background: #ecfdf5;"><i
+                            class="fas fa-thumbs-up"></i> Đề cử: <span id="nominationCount"
+                            th:text="${story.nominations != null ? story.nominations : 0}">0</span></span>
                 </div>
                 <div class="story-desc" th:utext="${story.description}">
                     Mô tả truyện...
@@ -208,6 +234,11 @@
                             <i class="fas fa-bookmark"></i> Thêm Vào Tủ Sách
                         </button>
                     </form>
+                    <button th:if="${#authorization.expression('isAuthenticated()')}" type="button"
+                        class="btn-animated btn-outline" onclick="nominateStory()"
+                        style="color: #10b981; border-color: #10b981;">
+                        <i class="fas fa-thumbs-up"></i> Đề Cử
+                    </button>
                 </div>
             </div>
         </div>
@@ -226,5 +257,32 @@
             </a>
         </div>
     </div>
+
+    <script th:inline="javascript">
+        const storyId = /*[[${story.id}]]*/ null;
+        function nominateStory() {
+            if (!storyId) return;
+            fetch(`/api/stories/${storyId}/nominate`, {
+                method: 'POST'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else if (response.status === 400) {
+                        alert('Bạn không có đủ phiếu đề cử! Hãy đọc truyện 10s để nhận thêm nhé.');
+                        throw new Error('Not enough tickets');
+                    } else {
+                        alert('Có lỗi xảy ra hoặc bạn phải đăng nhập!');
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(data => {
+                    document.getElementById('nominationCount').innerText = data;
+                    alert('Đề cử thành công!');
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
+
 </html>

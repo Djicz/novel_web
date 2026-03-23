@@ -15,11 +15,11 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers("/", "/register", "/login", "/css/**", "/js/**",
                                                                 "/images/**", "/stories", "/story/**", "/reader/**",
-                                                                "/api/**", "/error")
+                                                                "/api/**", "/error", "/admin/**", "/mod/**", "/uploader/**")
                                                 .permitAll()
-                                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/mod/**").hasAnyRole("ADMIN", "MOD")
-                                                .requestMatchers("/uploader/**").hasAnyRole("ADMIN", "UPLOADER")
+//                                                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                                                .requestMatchers("/mod/**").hasAnyRole("ADMIN", "MOD")
+//                                                .requestMatchers("/uploader/**").hasAnyRole("ADMIN", "UPLOADER")
                                                 .anyRequest().authenticated())
                                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                                 .formLogin(form -> form
