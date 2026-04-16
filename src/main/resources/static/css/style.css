@@ -136,25 +136,26 @@ a:hover {
     align-items: center;
 }
 .logo {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #2b3a4a;
+    font-size: 1.4rem;
+    font-weight: 700;
     text-decoration: none;
-    letter-spacing: 1px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    letter-spacing: -0.3px;
+    transition: opacity 0.15s ease;
+    display: inline-flex;
+    align-items: center;
 }
 .logo-special {
-    background: linear-gradient(to right, #2b6cb0, #e53e3e, #ecc94b);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% auto;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+}
+.logo-special .logo-text-main {
+    color: #1e293b;
+}
+.logo-special .logo-text-accent {
+    color: #4f46e5;
 }
 .logo-special:hover {
-    background-position: right center;
-    transform: scale(1.08) rotate(-1deg);
-    filter: drop-shadow(0 4px 6px rgba(229, 62, 62, 0.3));
+    opacity: 0.7;
 }
 .nav-links a.btn,
 .nav-links a {
